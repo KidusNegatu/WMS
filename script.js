@@ -92,7 +92,7 @@ async function appWriteDataProcess() {
   });
   console.log(res);
   let wholeData = res.rows
-  const latestRow = res.rows[4];
+  const latestRow = res.rows[0];
   const {
     WMSLastUpdate,
     APILastUpdated,
