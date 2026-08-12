@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WMS - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+</head>
+<body>
+    <div id="loading">
+        <!-- Copied from UIverse -->
+        <div class="loader">
+          <div class="square" id="sq1"></div>
+          <div class="square" id="sq2"></div>
+          <div class="square" id="sq3"></div>
+          <div class="square" id="sq4"></div>
+          <div class="square" id="sq5"></div>
+          <div class="square" id="sq6"></div>
+          <div class="square" id="sq7"></div>
+          <div class="square" id="sq8"></div>
+          <div class="square" id="sq9"></div>
+        </div>
+    </div>
+    
+    <button id="menus"><ion-icon name="menu-outline"></ion-icon></button>
+    <div id="sideBar">
+        <h1>WMS</h1>
+        <p id="nameP">Weather Monitoring System</p>
+        <button class="menuBtn" id="dBtn"><ion-icon class="ionicons" name="grid-outline"></ion-icon> Dashboard</button>
+        <button class="menuBtn" id="sBtn"><ion-icon name="bulb-outline" style="position: relative; top: 1px; left: -5px;"></ion-icon> Insights</button>
+        <button class="menuBtn" id="fBtn"><ion-icon name="calendar-outline" style="position: relative; top: 1px; left: -5px;"></ion-icon> Forecasts</button>
+        <button class="menuBtn" id="hBtn"><ion-icon class="ionicons" name="time-outline"></ion-icon> History</button>
+        <button class="menuBtn" id="aBtn"><ion-icon class="ionicons" name="information-circle-outline"></ion-icon> About</button>
+        <!-- <div id="statusBox">
+            <div id="onlineOfflineCircle"></div>
+            <h4>System status</h4>
+            <p id="onORoff">___</p>
+            <h3>Last update</h3>
+            <time id="timing">___</time>
+        </div> -->
+        <div id="pageBox">
+            <p id="pageName">WMS</p>
+            <p id="pageDis">Read • Store • Display</p>
+        </div>
+    </div>
+    
+    <section class="sections" id="dashboardSection">
+        <h2 class="sectionName">Dashboard</h2>
+        <p class="sectionDis">Latest reading via WMS</p>
+        <div id="sensorDiv">
+            <div class="sensorBox">
+                <p class="sensorName">Temperature</p>
+                <h2 class="sensorData" id="tempData">___</h2>
+                <img src="icons8-thermometer-80.png" alt="thermometer" class="sensorIcon">
+                <!-- <a href="#" class="sensorGraph" id="tempGraphBtn">See map</a> -->
+                <p class="statText">FeelsLike: <span id="feelTemp2"></span></p>
+            </div>
+            <div class="sensorBox">
+                <p class="sensorName">Humidity</p>
+                <h2 class="sensorData" id="humidityData">___</h2>
+                <img src="icons8-drop-96.png" alt="thermometer" class="sensorIcon">
+                <!-- <a href="#" class="sensorGraph" id="humGraphBtn">See map</a> -->
+                 <p class="statText">AvgHumid: <span id="avgHumid2"></span></p>
+            </div>
+            <div class="sensorBox">
+                <p class="sensorName">Rain</p>
+                <h2 class="sensorData" id="rainData">___</h2>
+                <img src="icons8-rain-64 (1).png" alt="thermometer" class="sensorIcon">
+                <!-- <a href="#" class="sensorGraph" id="rainGraphBtn">See map</a> -->
+                <p class="statText">Chance: <span id="chanceRain"></span></p>
+            </div>
+            <div class="sensorBox">
+                <p class="sensorName">Light</p>
+                <h2 class="sensorData" id="lightData">___</h2>
+                <img src="icons8-sun-100.png" alt="thermometer" class="sensorIcon" >
+                <!-- <a href="#" class="sensorGraph" id="lightGraphBtn">See map</a> -->
+                 <p class="statText">Cloud: <span id="cloud2"></span></p>
+            </div>
+            <div class="sensorBox">
+                <p class="sensorName">Air Pressure</p>
+                <h2 class="sensorData" id="airPresData">___</h2>
+                <img src="icons8-air-pressure-40.png" alt="thermometer" class="sensorIcon" >
+                <!-- <a href="#" class="sensorGraph" id="lightGraphBtn">See map</a> -->
+                 <p class="statText">Pascal: <span id="pascal"></span></p>
+            </div>
+            <div class="sensorBox">
+                <p class="sensorName">Altitude</p>
+                <h2 class="sensorData" id="altitudeData">___</h2>
+                <img src="icons8-sun-elevation-80.png" alt="thermometer" class="sensorIcon" >
+                <!-- <a href="#" class="sensorGraph" id="lightGraphBtn">See map</a> -->
+                 <p class="statText">AvgSeaLevel: <span id="seaLevel">2,327</span></p>
+            </div>
+            <div class="sensorBox">
+                <p class="sensorName">Wind</p>
+                <h2 class="sensorData" id="windData">___</h2>
+                <img src="icons8-wind-100.png" alt="thermometer" class="sensorIcon" >
+                <!-- <a href="#" class="sensorGraph" id="lightGraphBtn">See map</a> -->
+                 <p class="statText">Direction: <span id="windDir2">2,327</span></p>
+            </div>
+        </div>
+        <div id="condition">
+            <div id="iconBox"></div>
+            <p id="conditionText">_____</p>
+        </div>
+        <div id="map"></div>
+    </section> 
+    <section class="sections" id="statisticsSection">
+        <h2 class="sectionName">Insights</h2>
+        <p class="sectionDis">Latest updates</p>
+        <div class="panel">
+          <div class="grid">
+            <div class="card">
+              <div id="dayOrNightIcon" class="icon-wrap" style="background:rgba(242,184,75,.14); color:#f2b84b;">
+
+                <!-- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2M12 19.5v2M3.5 12h2M18.5 12h2" stroke-linecap="round"/></svg> -->
+              </div>
+              <div class="card-text">
+                <div class="card-label">Day / Night</div>
+                <div class="card-value" id="dayTimeOrNightTime"></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(154,167,194,.14); color:#9aa7c2;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 18a4 4 0 1 1 .4-8 5.5 5.5 0 0 1 10.7 1.6A3.5 3.5 0 0 1 17 18H6.5Z" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Cloud Cover</div>
+                <div class="card-value" id="cloudCoverBox"><span class="unit">%</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(242,184,75,.14); color:#f2b84b;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0Z"/><path d="M9 8h2M9 11h2"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Feels Like</div>
+                <div class="card-value" id="feelsLikeTempBox"><span class="unit" id="feelsLikeTempUnit">°C</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(87,194,230,.14); color:#57c2e6;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h9.5a2.5 2.5 0 1 0-2.4-3.2M3 12h13a2.5 2.5 0 1 1-2.4 3.2M3 16h7a2 2 0 1 1-1.9 2.6" stroke-linecap="round"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Wind Speed</div>
+                <div class="card-value" id="windSpeedBox"><span class="unit">km/h</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(87,194,230,.14); color:#57c2e6;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m14.5 9.5-1.7 5.2-5.2 1.7 1.7-5.2z" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Wind Direction</div>
+                <div class="card-value" id="windDirectionBox">NE</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(231,236,245,.10); color:#e7ecf5;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="2.3"/><path d="M7 2.3v1.3M7 10v1.3M2.3 7h1.3M10.7 7H12M3.6 3.6l1 1M10.4 3.6l-1 1" stroke-linecap="round"/><path d="M9.5 17.5a3.7 3.7 0 1 1 .4-7.4 5 5 0 0 1 9.6 1.4 3.2 3.2 0 0 1-1 6H9.5Z" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Current Condition</div>
+                <div class="card-value" id="currentConditionBox">Partly Cloudy</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(246,211,101,.14); color:#f6d365;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke-linecap="round"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Sun Intensity</div>
+                <div class="card-value" id="sunIntensityBox">640<span class="unit">lux</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(240,101,79,.14); color:#f0654f;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Max Temp</div>
+                <div class="card-value" id="maxTempBox">21.1<span class="unit">°C</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(79,157,240,.14); color:#4f9df0;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Min Temp</div>
+                <div class="card-value" id="minTempBox">12.6<span class="unit">°C</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(62,207,192,.14); color:#3ecfc0;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c2-2.5 4-2.5 6 0s4 2.5 6 0 4-2.5 6 0" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Avg Temp</div>
+                <div class="card-value" id="avgTempBox">16.1<span class="unit">°C</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(154,167,194,.14); color:#9aa7c2;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 15a4 4 0 1 1 .4-8 5.5 5.5 0 0 1 10.7 1.6A3.5 3.5 0 0 1 17 16H6.5Z" stroke-linejoin="round"/><path d="M8 19l-1 2M12 19l-1 2M16 19l-1 2" stroke-linecap="round"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Forecast Condition</div>
+                <div class="card-value" id="forecastConditionBox">Light Showers</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(79,157,240,.14); color:#4f9df0;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6.5 6 10.5A6 6 0 0 1 6 13.5C6 9.5 12 3 12 3Z" fill="currentColor" stroke="none"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Chance of Rain</div>
+                <div class="card-value" id="chanceOfRainIcon">84<span class="unit">%</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(79,157,240,.14); color:#4f9df0;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6.5 6 10.5A6 6 0 0 1 6 13.5C6 9.5 12 3 12 3Z" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Avg Humidity</div>
+                <div class="card-value" id="avgHumidityBox">81<span class="unit">%</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(87,194,230,.14); color:#57c2e6;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h9.5a2.5 2.5 0 1 0-2.4-3.2M3 12h13a2.5 2.5 0 1 1-2.4 3.2M3 16h7a2 2 0 1 1-1.9 2.6" stroke-linecap="round"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Max Wind</div>
+                <div class="card-value" id="maxWindBox">18.2<span class="unit">km/h</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(240,151,90,.14); color:#f0975a;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M4.9 8.3l1.4 1.4M19.1 8.3l-1.4 1.4M2 18h20M5 18a7 7 0 0 1 14 0" stroke-linecap="round"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Sunrise</div>
+                <div class="card-value" id="sunriseBox"></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(199,125,240,.14); color:#c77df0;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10V6M4.9 8.3l1.4 1.4M19.1 8.3l-1.4 1.4M2 18h20M5 18a7 7 0 0 1 14 0" stroke-linecap="round"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Sunset</div>
+                <div class="card-value" id="sunsetBox"></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(142,163,214,.14); color:#8ea3d6;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h20M6 18a5.5 5.5 0 0 1 9.5-3.8A4.2 4.2 0 1 1 12.5 8a5.5 5.5 0 0 1-6.5 10Z" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Moonrise</div>
+                <div class="card-value" id="moonriseBox"></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(142,163,214,.14); color:#8ea3d6;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label" >Moonset</div>
+                <div class="card-value" id="moonsetBox"></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(142,163,214,.14); color:#8ea3d6;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4.5A7.5 7.5 0 0 1 15 19a7.5 7.5 0 0 1 0-14.5Z" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Moon Illumination</div>
+                <div class="card-value" id="moonIlluminationBox">62<span class="unit">%</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(242,184,75,.14); color:#f2b84b;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0Z"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Temperature</div>
+                <div class="card-value" id="tempBox">14.8<span class="unit">°C</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(79,157,240,.14); color:#4f9df0;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6.5 6 10.5A6 6 0 0 1 6 13.5C6 9.5 12 3 12 3Z" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Humidity</div>
+                <div class="card-value null" id="humidityBox">null</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(246,211,101,.14); color:#f6d365;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3Z" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Light Level (LDR)</div>
+                <div class="card-value null" id="ldrBox">null</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(79,157,240,.14); color:#4f9df0;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6.5 6 10.5A6 6 0 0 1 6 13.5C6 9.5 12 3 12 3Z" fill="currentColor" stroke="none"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Rain Value</div>
+                <div class="card-value null" id="rainBox">null</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(62,207,192,.14); color:#3ecfc0;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 12 8.5 9M12 6v1" stroke-linecap="round"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Air Pressure</div>
+                <div class="card-value null" id="airPressureBox">null</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="icon-wrap" style="background:rgba(199,125,240,.14); color:#c77df0;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 18 5-9 4 6 3-4 6 7Z" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Altitude</div>
+                <div class="card-value null" id="altitudeBox">null</div>
+              </div>
+            </div>
+            <div class="card alert-card">
+              <div class="icon-wrap" style="background:rgba(230,88,79,.16); color:#e6584f;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3Z" stroke-linejoin="round"/><path d="M12 10v4M12 17h.01" stroke-linecap="round"/></svg>
+              </div>
+              <div class="card-text">
+                <div class="card-label">Alert</div>
+                <div class="card-value" id="alertBox">None</div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </section>
+    <section class="sections" id="historySection">
+        <h2 class="sectionName">History</h2>
+        <p class="sectionDis">Whole history</p>
+        <div style="overflow-x:auto;" id="tabelBox">
+          <table class="weatherTable" id="historyTable">
+            <thead>
+              <tr>
+                <th>WMS Last Update</th>
+                <th>API Last Updated</th>
+                <th>Day/Night</th>
+                <th>Cloud Cover</th>
+                <th>Feels Like Temp</th>
+                <th>Wind (KPH)</th>
+                <th>Wind Direction</th>
+                <th>Condition</th>
+                <th>Sun Intensity</th>
+                <th>Max Temp</th>
+                <th>Min Temp</th>
+                <th>Avg Temp</th>
+                <th>Forecast Condition</th>
+                <th>Chance of Rain</th>
+                <th>Avg Humidity</th>
+                <th>Max Wind (KPH)</th>
+                <th>Sunrise</th>
+                <th>Sunset</th>
+                <th>Moonrise</th>
+                <th>Moonset</th>
+                <th>Moon Illumination</th>
+                <th>Temp</th>
+                <th>Humidity</th>
+                <th>LDR Value</th>
+                <th>Rain Value</th>
+                <th>Air Pressure</th>
+                <th>Altitude</th>
+                <th>Alert</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody">
+            </tbody>
+          </table>
+        </div>
+    </section>
+    <section class="sections" id="forecastSection">
+        <h2 class="sectionName">Forecasts</h2>
+        <p class="sectionDis">Hourly forcast with WMS </p>
+        <div class="weatherTableWrapper">
+        <table class="weatherTable" id="weatherTable">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Day/Night</th>
+              <th>Condition</th>
+              <th class="numeric">Temperature<br>(°C)</th>
+              <th class="numeric">Feels Like<br>(°C)</th>
+              <th class="numeric">Humidity<br>(%)</th>
+              <th class="numeric">Chance of Rain<br>(%)</th>
+              <th class="numeric">Cloud<br>(%)</th>
+              <th class="numeric">Wind<br>(kph)</th>
+              <th> Wind Direction</th>
+            </tr>
+          </thead>
+          <tbody id="weatherTableBody"></tbody>
+        </table>
+    </section>
+    <section class="sections" id="aboutSection">
+        <h2 class="sectionName">About</h2>
+        <p class="sectionDis">Introduction to WMS</p>
+        <div id="subAbout">
+          <p id="aboutP">WMS (Weather Monitoring System) is a low-cost, Arduino-based embedded system that can collect, store, process, and display local weather. It can measure Temperature, Humidity, Air Pressure, Light Intensity (Sunlight), Rain Intensity, and Altitude. By using WeatherAPI, it can obtain weather data from external meteorological data source. The API provides wind direction, wind speed and forecast weather information, which the system retrieves, processes, and displays to the user. WMS can be used by farmers, researchers, students & schools, Communities, Developers & engineers and Organizations. WMS works by collecting data from sensors and APIs, storing and processing the data, and displaying the information through a website and an LCD display. The collected data is stored in an Appwrite database and displayed on a GitHub-hosted website. The system can update the data approximately every 20 seconds and handles missing values by storing them as null.</p>
+          <h4 id="sensorsTtile">Sensors used in WMS</h4>
+          <ul id="sensors">
+            <li>DHT11 sensor – Temperature and Humidity sensor</li>
+            <li>BMP085 – Air pressure and Altitude sensor</li>
+            <li>LDR photoresistor – Light sensor</li>
+            <li>FC37 – rain sensor</li>
+          </ul>
+          <h4 id="stepTitle">How to start WMS server</h4>
+          <ol id="steps">
+            <li>Install Python on your computer</li>
+            <li>Create folder for WMS</li>
+            <li>Open folder in a terminal</li>
+            <li>Run this command: pip install appwrite requests pyserial datetime</li>
+            <li>Run this command: npm install -g pm2</li>
+            <li>Go to <a id="wmsLink" target="_blank" href="https://github.com/KidusNegatu/WMS/blob/main/WMSserver.py">https://github.com/KidusNegatu/WMS/blob/main/WMSserver.py</a></li>
+            <li>Copy the WMSserver.py code or download it</li>
+            <li>Connect your computer to WMS</li>
+            <li>Wait till you hear a beep sound</li>
+            <li>Run this command: pm2 start WMSserver.py</li>
+          </ol>
+          <h4 id="solutionTitle">50 Solutions WMS can solve(If Data is studied)</h4>
+          <ol id="solutions">
+            <li>Frost Protection Timing</li>
+              <li>Smart Irrigation Scheduling</li>
+              <li>Pesticide Spray Drift Prevention</li>
+              <li>Crop Disease Risk Alerts</li>
+              <li>Optimal Harvest Day Selection</li>
+              <li>Livestock Heat Stress Warning</li>
+              <li>Solar Panel Output Forecasting</li>
+              <li>Solar Panel Cleaning Scheduler</li>
+              <li>Off-Grid Battery Charge Planning</li>
+              <li>Wind Turbine Safety Shutdown</li>
+              <li>Concrete Pour Go/No-Go Decision</li>
+              <li>Crane Operation Wind Limits</li>
+              <li>Roofing & High-Work Safety Check</li>
+              <li>Paint/Coating Application Window</li>
+              <li>Construction Crew Daily Scheduling</li>
+              <li>Heatstroke & UV Risk Alerts</li>
+              <li>Barometric Pressure Health Correlation</li>
+              <li>Severe Weather Push Notifications</li>
+              <li>School Recess/Sports Go-No-Go</li>
+              <li>Icy Road Risk Detection</li>
+              <li>Delivery Route Delay Prediction</li>
+              <li>Drone Flight Safety Check</li>
+              <li>Marine/Boat Launch Safety Advisory</li>
+              <li>Fuel-Efficient Trucking Route Planning</li>
+              <li>Airport Ground Operations Support</li>
+              <li>Smart HVAC Pre-Conditioning</li>
+              <li>Automated Window/Skylight Control</li>
+              <li>Residential Smart Irrigation Control</li>
+              <li>Automated Outdoor Lighting Control</li>
+              <li>Home Energy Efficiency Analysis</li>
+              <li>Outdoor Event Planning Advisory</li>
+              <li>Golf Course Conditions Advisory</li>
+              <li>Running/Cycling Comfort Index</li>
+              <li>Stargazing & Astrophotography Planner</li>
+              <li>Fishing Conditions Forecast</li>
+              <li>Hunting Window Prediction</li>
+              <li>Ski Resort Snow-Making Scheduler</li>
+              <li>Retail Foot-Traffic Forecasting</li>
+              <li>Restaurant Patio Staffing Planner</li>
+              <li>Insurance Claim Weather Verification</li>
+              <li>Construction Insurance Risk Pricing</li>
+              <li>Automated Event Cancellation Insurance</li>
+              <li>Flash Flood Early Warning System</li>
+              <li>Wildfire Risk Index Calculator</li>
+              <li>Landslide Risk Monitoring</li>
+              <li>Storm Approach Tracking</li>
+              <li>Microclimate Mapping</li>
+              <li>Daily Outfit Recommendation</li>
+              <li>Commute Weather Alert System</li>
+              <li>Sensor/API Data Freshness Monitoring</li>
+          </ol>
+        </div>
+    </section>
+    <script type="module" src="script.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+</body>
