@@ -7,8 +7,8 @@ const int ldrPin = A0;
 const int dhtPin = 10;
 const int rainPin = A3;
 const int buzzerPin = 9;
-const int upBtn = 52;
-const int downBtn = 53;
+const int upBtn = 11;
+const int downBtn = 12;
 const int dataLength = 7;
 String datas[dataLength];
 int itemCount = 0;
@@ -24,22 +24,6 @@ DHT dht(dhtPin, DHT11);
 LiquidCrystal lcd(7, 6, 5, 4, 3, 2);
 Adafruit_BMP085 bmp;
 
-//String pythonLastUpdate = "N/A";
-//String dayOrNight       = "N/A";
-//float cloudCover        = 0;
-//float feelsLikeTemp     = 0;
-//float windKph           = 0;
-//String windDirection    = "N/A";
-//float maxTemp           = 0;
-//float minTemp           = 0;
-//float avgTemp           = 0;
-//String condition        = "N/A";
-//int chanceOfRain        = 0;
-//int avgHumidity         = 0;
-//float maxWindKph        = 0;
-//String sunrise          = "N/A";
-//String sunset           = "N/A";
-
 void setup() {
   pinMode(ldrPin, INPUT);
   pinMode(dhtPin, INPUT);
@@ -51,7 +35,7 @@ void setup() {
   dht.begin();
   lcd.begin(16, 2);
   Wire.begin();
-  if(!bmp.begin()) {
+  if(!bmp.begin(0x76)) {
     Serial.println("BMP is not working!!");
     while(1);
   }
@@ -63,10 +47,12 @@ void setup() {
 void lcdFun() {
   if (digitalRead(downBtn) == LOW && topItem < itemCount - 2) {
     topItem++;
+//    Serial.println("DOWN");
     delay(50);
   }
   if (digitalRead(upBtn) == LOW && topItem > 0) {
     topItem--;
+//    Serial.println("UP");
     delay(50);
   }
   lcd.clear();
@@ -192,7 +178,7 @@ void loop() {
         lcd.blink();
         delay(500);
         lcd.noBlink();
-      }
+      }     
     }
   }
 
@@ -206,7 +192,6 @@ void loop() {
            "\"Alert\":\"" + alert + "\"" +
        "}";
   Serial.println(dataAsJSON);
-
   buildDisplayData(ldrPercentage, rainPercentage);
   lcdFun();
   delay(300);
